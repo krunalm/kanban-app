@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import Notes from './Notes';
 
 export default class App extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -11,8 +11,7 @@ export default class App extends React.Component {
                 {
                     id: uuid.v4(),
                     task: 'Learn react'
-                },
-                {
+                }, {
                     id: uuid.v4(),
                     task: 'buy xbox one!'
                 }
@@ -22,10 +21,13 @@ export default class App extends React.Component {
 
     addNote = () => {
         this.setState({
-            notes: this.state.notes.concat({
-                id: uuid.v4(),
-                task: 'NEW Todo'
-            })
+            notes: this
+                .state
+                .notes
+                .concat({
+                    id: uuid.v4(),
+                    task: 'NEW Todo'
+                })
         });
     }
 
@@ -35,16 +37,56 @@ export default class App extends React.Component {
         return (
             <div>
                 <button onClick={this.addNote}>+</button>
-                <Notes notes={notes} onDelete={this.deleteNote}/>
+                <Notes
+                    notes={notes}
+                    onNoteClick={this.activateNoteEdit}
+                    onEdit={this.editNote}
+                    onDelete={this.deleteNote}/>
             </div>
         );
     }
 
-    deleteNote =(id,e) => {
+    activateNoteEdit = (id) => {
+        this.setState({
+            notes: this
+                .state
+                .notes
+                .map(note => {
+                    if (note.id === id) {
+                        note.editing = true;
+                    }
+
+                    return note;
+                })
+        });
+    }
+
+    editNote = (id, task) => {
+        this.setState({
+            notes: this
+                .state
+                .notes
+                .map(note => {
+                    if (note.id === id) {
+                        note.editing = false;
+                        note.task = task;
+                    }
+
+                    return note;
+                })
+        });
+    }
+
+    deleteNote = (id, e) => {
         e.stopPropagation();
 
         console.log(id);
 
-        this.setState({notes: this.state.notes.filter(note=>note.id!==id)});
+        this.setState({
+            notes: this
+                .state
+                .notes
+                .filter(note => note.id !== id)
+        });
     }
 }
