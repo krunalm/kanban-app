@@ -1,13 +1,15 @@
 import React from 'react';
 
 export default (state, actions) => {
-    if (typeof state === 'function' || 
-        (typeof state === 'object' && Object.keys(state).length)) {
+    if (typeof state === 'function' ||
+        (state && typeof state === 'object' && Object.keys(state).length)) {
             return target => connect(state, actions, target);
     }
 
-    return target => props => (
-        <target {...Object.assign({}, props, actions)} />
+    // Lowercase JSX identifiers are treated as DOM elements, so render
+    // through createElement to forward to the actual component.
+    return Target => props => (
+        React.createElement(Target, Object.assign({}, props, actions))
     );
 }
 

@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import Notes from './Notes';
 import connect from '../libs/connect';
 
-class App extends React.Component {
+export class App extends React.Component {
     constructor(props) {
         super(props);
 
@@ -53,13 +53,9 @@ class App extends React.Component {
             notes: this
                 .state
                 .notes
-                .map(note => {
-                    if (note.id === id) {
-                        note.editing = true;
-                    }
-
-                    return note;
-                })
+                .map(note => (
+                    note.id === id ? {...note, editing: true} : note
+                ))
         });
     }
 
@@ -68,21 +64,14 @@ class App extends React.Component {
             notes: this
                 .state
                 .notes
-                .map(note => {
-                    if (note.id === id) {
-                        note.editing = false;
-                        note.task = task;
-                    }
-
-                    return note;
-                })
+                .map(note => (
+                    note.id === id ? {...note, editing: false, task} : note
+                ))
         });
     }
 
     deleteNote = (id, e) => {
         e.stopPropagation();
-
-        console.log(id);
 
         this.setState({
             notes: this
