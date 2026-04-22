@@ -1,6 +1,6 @@
 import assert from 'assert';
 import React from 'react';
-import connect from '../app/libs/connect';
+import connect, {shallowEqual} from '../app/libs/connect';
 
 describe('connect', function() {
     // Regression: when no state selector is supplied, connect previously
@@ -39,5 +39,36 @@ describe('connect', function() {
         const hoc = connect(selector);
 
         assert.equal(typeof hoc, 'function');
+    });
+});
+
+describe('shallowEqual', function() {
+    it('returns true for identical references', function() {
+        const obj = {a: 1};
+        assert.equal(shallowEqual(obj, obj), true);
+    });
+
+    it('returns true for objects with the same shallow values', function() {
+        assert.equal(shallowEqual({a: 1, b: 'x'}, {a: 1, b: 'x'}), true);
+    });
+
+    it('returns false when values differ', function() {
+        assert.equal(shallowEqual({a: 1}, {a: 2}), false);
+    });
+
+    it('returns false when key counts differ', function() {
+        assert.equal(shallowEqual({a: 1}, {a: 1, b: 2}), false);
+    });
+
+    it('compares by reference, not deep value', function() {
+        // Re-derived arrays with identical contents are not shallow-equal,
+        // which is exactly what lets connect detect a new notes list.
+        assert.equal(shallowEqual({notes: [1]}, {notes: [1]}), false);
+    });
+
+    it('handles null inputs without throwing', function() {
+        assert.equal(shallowEqual(null, {}), false);
+        assert.equal(shallowEqual({}, null), false);
+        assert.equal(shallowEqual(null, null), true);
     });
 });

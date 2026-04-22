@@ -1,87 +1,32 @@
 import React from 'react';
-import uuid from 'uuid';
 import Notes from './Notes';
 import connect from '../libs/connect';
+import NoteActions from '../actions/NoteActions';
 
-export class App extends React.Component {
-    constructor(props) {
-        super(props);
+export const App = ({notes, onAdd, onNoteClick, onEdit, onDelete}) => (
+    <div>
+        <button className="add-note" onClick={onAdd}>+</button>
+        <Notes
+            notes={notes}
+            onNoteClick={onNoteClick}
+            onEdit={onEdit}
+            onDelete={onDelete}
+        />
+    </div>
+);
 
-        this.state = {
-            notes: [
-                {
-                    id: uuid.v4(),
-                    task: 'Learn react'
-                }, {
-                    id: uuid.v4(),
-                    task: 'buy xbox one!'
-                }
-            ]
-        };
+export const mapState = ({notes = []}) => ({notes});
+
+export const actions = {
+    onAdd: () => NoteActions.create('NEW Todo'),
+    onNoteClick: (id) => NoteActions.activateEdit(id),
+    onEdit: (id, task) => NoteActions.update({id, task}),
+    onDelete: (id, e) => {
+        if (e && typeof e.stopPropagation === 'function') {
+            e.stopPropagation();
+        }
+        NoteActions.delete(id);
     }
+};
 
-    addNote = () => {
-        this.setState({
-            notes: this
-                .state
-                .notes
-                .concat({
-                    id: uuid.v4(),
-                    task: 'NEW Todo'
-                })
-        });
-    }
-
-    render() {
-        const {notes} = this.state;
-
-        return (
-            <div>
-                {this.props.test}
-                <button className="add-note" onClick={this.addNote}>+</button>
-                <Notes
-                    notes={notes}
-                    onNoteClick={this.activateNoteEdit}
-                    onEdit={this.editNote}
-                    onDelete={this.deleteNote}/>
-            </div>
-        );
-    }
-
-    activateNoteEdit = (id) => {
-        this.setState({
-            notes: this
-                .state
-                .notes
-                .map(note => (
-                    note.id === id ? {...note, editing: true} : note
-                ))
-        });
-    }
-
-    editNote = (id, task) => {
-        this.setState({
-            notes: this
-                .state
-                .notes
-                .map(note => (
-                    note.id === id ? {...note, editing: false, task} : note
-                ))
-        });
-    }
-
-    deleteNote = (id, e) => {
-        e.stopPropagation();
-
-        this.setState({
-            notes: this
-                .state
-                .notes
-                .filter(note => note.id !== id)
-        });
-    }
-}
-
-export default connect(() => ({
-    test: 'km-test'
-}))(App);
+export default connect(mapState, actions)(App);
