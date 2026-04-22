@@ -42,7 +42,6 @@
     "karma-spec-reporter": "0.0.26",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.5.2",
-    "npm-install-webpack-plugin": "4.0.0",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "^2.1.7",
     "react-addons-perf": "^15.1.0",
@@ -58,7 +57,9 @@
     "alt-container": "^1.0.2",
     "alt-utils": "^1.0.0",
     "classnames": "^2.2.5",
+    "prop-types": "^15.5.10",
     "react": "^15.1.0",
-    "react-dom": "^15.1.0"
+    "react-dom": "^15.1.0",
+    "uuid": "^3.0.0"
   }
 }
